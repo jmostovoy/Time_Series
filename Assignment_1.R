@@ -1,20 +1,5 @@
 ####Preamble####
 
-library(MASS)
-library(moments)
-library(car)
-library(zoo)
-library(lmtest)
-library(sandwich)
-library(strucchange)
-library(urca)
-library(vars)
-library(lmtest)
-library(vars)
-library(ggplot2)
-library(scales)
-library(gridExtra)
-library(lubridate)
 library(stats)
 
 ####Question 1####
