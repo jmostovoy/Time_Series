@@ -15,6 +15,7 @@ library(ggplot2)
 library(scales)
 library(gridExtra)
 library(lubridate)
+library(stats)
 
 #Question 1
 
@@ -24,5 +25,10 @@ dollar <- ts(log(dollar))
 View(dollar)
 returns <- diff(dollar)
 View(returns)
-corrgram(t(dollar))
+
+
+acf(dollar)
+spec.pgram(dollar)
+acf(returns)
+spec.pgram(returns)
 
