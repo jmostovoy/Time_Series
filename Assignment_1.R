@@ -12,7 +12,6 @@ View(dollar)
 returns <- diff(dollar)
 View(returns)
 
-
 acf(dollar)
 spec.pgram(dollar)
 
@@ -35,6 +34,11 @@ RCO2 <-ts(RCO2)
 View(RCO2)
 
 spec.pgram(RCO2)
+
+#Specral Analysis Raw Data for CO2
+RCO2spec<-spec.pgram(RCO2, plot = F)
+View(as.data.frame(RCO2spec$freq))
+View(as.data.frame(RCO2spec$spec))
 
 #Part b
 RCO2_trend <- scan(file="CO2-trend.txt")
