@@ -33,6 +33,10 @@ View(as.data.frame(returnsspec$spec))
 acf(abs(returns))
 spec.pgram(abs(returns))
 
+absreturnsspec<-spec.pgram(abs(returns), plot=F)
+mean(returnsspec$spec)
+mean(absreturnsspec$spec)
+
 ####Question 2####
 
 
@@ -60,7 +64,11 @@ View(RCO2_sub_trend)
 
 
 spec.pgram(RCO2)
-spec.pgram(RCO2_sub_trend)
-lines(RCO2spec$freq, RCO2spec$spec, type="l", lty=1, col=plot_colours1[2])
 
+RCO2_sub_trendspec<-spec.pgram(RCO2_sub_trend, plot = F)
+spec.pgram(RCO2_sub_trend, lty=1, col=plot_colours1[2], main = "")
+lines(RCO2spec$freq, RCO2spec$spec, type="l", lty=1, col=plot_colours1[1])
+title(main="Raw Periodograms for CO2 & CO2 Minus Trend Data", col.main="forestgreen", font.main=4)
+legend(RCO2spec$freq[230], RCO2spec$spec[60], 
+       c("CO2 Raw", "CO2 Minus Trend"), lty=c(1,1), lwd=c(2,2),cex=1.1, bty = "n", col=plot_colours1)
 
