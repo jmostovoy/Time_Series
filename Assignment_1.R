@@ -11,6 +11,7 @@ dollar <- ts(log(dollar))
 View(dollar)
 returns <- diff(dollar)
 View(returns)
+Box.test(returns, lag = 4, type = "Ljung-Box")
 
 acf(dollar)
 spec.pgram(dollar)
@@ -18,6 +19,15 @@ spec.pgram(dollar)
 #Part b
 acf(returns)
 spec.pgram(returns)
+
+#Specral Analysis of Raw Data for stocks
+dollarspec<-spec.pgram(dollar, plot = F)
+View(as.data.frame(dollarspec$freq))
+View(as.data.frame(dollarspec$spec))
+
+returnsspec<-spec.pgram(returns, plot = F)
+View(as.data.frame(returnsspec$freq))
+View(as.data.frame(returnsspec$spec))
 
 #Part d
 acf(abs(returns))
@@ -48,6 +58,9 @@ RCO2_trend <- ts(RCO2_trend)
 RCO2_sub_trend <- RCO2-RCO2_trend
 View(RCO2_sub_trend)
 
+
+spec.pgram(RCO2)
 spec.pgram(RCO2_sub_trend)
+lines(RCO2spec$freq, RCO2spec$spec, type="l", lty=1, col=plot_colours1[2])
 
 
