@@ -21,3 +21,10 @@ title(main="Time Series Plot of Flour Data",
 acf(flour)
 spec.pgram(flour)
 pacf(flour)
+
+#Test for best Arima:
+forecast::auto.arima(flour)
+fitAR11<-arima(flour, order = c(1,0,1))
+print(fitAR11)
+Box.test(residuals(fitAR11), lag = 2, type = "Ljung-Box")
+ar(flour)
