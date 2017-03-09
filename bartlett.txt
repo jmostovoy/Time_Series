@@ -1,0 +1,36 @@
+bartlett <- function(x,plot=F) {
+   x <- as.vector(x)
+   x <- x - mean(x)
+   n <- length(x)
+   m <- floor(n/2)+1
+   s <- Mod(fft(x)[1:m])^2/n
+   sums <- sum(s)
+   cumper <- cumsum(s)/sums
+   v <- c(0:(m-1))/(m-1)
+   upper <- v + 2*sqrt(v*(1-v))/sqrt(n/2)
+   lower <- v - 2*sqrt(v*(1-v))/sqrt(n/2)
+   a <- max(abs(cumper-v))*sqrt(n/2)
+   sgn <- 1
+   j <- 1
+   incr <- 2*exp(-2*a^2)
+   pval <- incr
+   while ( incr > 1e-5 ) {
+      sgn <- -sgn
+      j <- j + 1
+      incr <- 2*exp(-2*a^2*j^2)
+      pval <- pval + sgn*incr
+      }
+   tit <- paste("Bartlett's statistic=",round(a,3),"p-value=",round(pval,4))
+   if (plot) {
+      plot(v,cumper,xlab=" ",ylab="Cumulative periodogram",pch=20)
+      abline(0,1)
+      lines(v,upper,lty=2)
+      lines(v,lower,lty=2)
+      title(sub=tit)
+      }
+   bartlett <- a
+   pvalue <- pval
+   r <- list(stat=bartlett,p.value=pvalue)
+   r
+   }
+   
