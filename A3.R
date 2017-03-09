@@ -104,3 +104,25 @@ Box.test(g$residuals)
 tsdiag(g)
 
 #Part B
+
+g1 <- predict(g,n.ahead=12)
+g1$pred
+g1$se
+
+#Part C
+
+subfatalities<-fatalities[c(1:168)]
+ddsubfatalities <- diff(diff(subfatalities))
+View(ddsubfatalities)
+acf(ddsubfatalities)
+pacf(ddsubfatalities)
+auto.arima(ddsubfatalities)
+h<-arima(ddsubfatalities)
+Box.test(h$residuals)
+tsdiag(h)
+h1 <- predict(h,n.ahead=12)
+h1$pred
+h1$se
+
+
+
