@@ -35,8 +35,6 @@ Box.test(returns,lag=9,type="Ljung")
 
 #### QUESTION 2 ####
 
-install.packages("‘normwhn.test")
-
 yield <- scan(file="yield.txt")
 yield <- ts(yield)
 View(yield)
@@ -80,3 +78,29 @@ tsdiag(y)
 
 ####QUESTION 3 ####
 
+fatalities <- scan(file="fatalities.txt")
+fatalities <- ts(fatalities)
+View(fatalities)
+
+#Part A
+
+#(i)
+ddfatalities <- diff(diff(fatalities))
+View(ddfatalities)
+
+#(ii)
+
+acf(ddfatalities)
+pacf(ddfatalities)
+
+#implies MA(3) - I think...
+
+#(iii)
+auto.arima(ddfatalities)
+g<-arima(ddfatalities)
+
+#(iv)
+Box.test(g$residuals)
+tsdiag(g)
+
+#Part B
