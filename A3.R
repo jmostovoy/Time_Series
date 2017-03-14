@@ -153,12 +153,16 @@ View(dlfatalities)
 
 acf(dlfatalities, lag.max = 40)
 pacf(dlfatalities,  lag.max = 40)
+Arima(fatalities, order=c(0,1,1), seasonal=list(order = c(0, 1, 1), period = 12))$aic
+Arima(fatalities, order=c(1,1,1), seasonal=list(order = c(1, 1, 1), period = 12))$aic
+Arima(fatalities, order=c(0,1,2), seasonal=list(order = c(0, 1, 2), period = 12))$aic
+Arima(fatalities, order=c(1,1,2), seasonal=list(order = c(1, 1, 2), period = 12))$aic
 
 #test
-fit3 <- Arima(dlfatalities, order=c(0,1,1), seasonal=list(order = c(0, 1, 1), period = 12))
+fit3 <- Arima(fatalities, order=c(0,1,1), seasonal=list(order = c(0, 1, 1), period = 12))
 res <- residuals(fit3)
 tsdisplay(res)
-Box.test(res, lag=16, fitdf=4, type="Ljung")
+Box.test(res, lag=12, fitdf=12, type="Ljung")
 
 
 fit3 <- Arima(euretail, order=c(0,1,3), seasonal=c(0,1,1))
