@@ -153,60 +153,34 @@ View(dlfatalities)
 
 acf(dlfatalities, lag.max = 40)
 pacf(dlfatalities,  lag.max = 40)
+
+#(iii)
+Arima(fatalities, order=c(1,1,0), seasonal=list(order = c(1, 1, 0), period = 12))$aic
 Arima(fatalities, order=c(0,1,1), seasonal=list(order = c(0, 1, 1), period = 12))$aic
 Arima(fatalities, order=c(1,1,1), seasonal=list(order = c(1, 1, 1), period = 12))$aic
 Arima(fatalities, order=c(0,1,2), seasonal=list(order = c(0, 1, 2), period = 12))$aic
 Arima(fatalities, order=c(1,1,2), seasonal=list(order = c(1, 1, 2), period = 12))$aic
 
-#test
+#(iiii)
 fit3 <- Arima(fatalities, order=c(0,1,1), seasonal=list(order = c(0, 1, 1), period = 12))
 res <- residuals(fit3)
 tsdisplay(res)
-Box.test(res, lag=12, fitdf=12, type="Ljung")
+Box.test(res, lag=12, type="Ljung")
+Box.test(res, lag=5, type="Ljung")
+bartlett(res)
 
 
-fit3 <- Arima(euretail, order=c(0,1,3), seasonal=c(0,1,1))
-res <- residuals(fit3)
-tsdisplay(res)
-Box.test(res, lag=16, fitdf=4, type="Ljung")
+#Part 2
+plot(forecast(fit3, h=12))
 
-data(euretail, package = "fpp")
-
-#implies MA(3) - I think...
-
-#(iii)
-auto.arima(dlfatalities)
-g<-arima(dlfatalities)
-acf(arima(dlfatalities, order = c(0, 1, 1),
-      seasonal = list(order = c(0, 1, 1), period = 12))$residuals)
-arima(dlfatalities, order = c(1, 1, 1),
-      seasonal = list(order = c(1, 1, 1), period = 12))$aic
-sarima(dlfatalities,0,1,1,0,1,1,12)
-
-#(iv)
-Box.test(g$residuals)
-tsdiag(g)
-
-#Part B
-
-g1 <- predict(g,n.ahead=12)
-g1$pred
-g1$se
-
-#Part C
+#Part 3
 
 subfatalities<-fatalities[c(1:168)]
-ddsubfatalities <- diff(diff(subfatalities))
-View(ddsubfatalities)
-acf(ddsubfatalities)
-pacf(ddsubfatalities)
-auto.arima(ddsubfatalities)
-h<-arima(ddsubfatalities)
-Box.test(h$residuals)
-tsdiag(h)
-h1 <- predict(h,n.ahead=12)
-h1$pred
-h1$se
+fit4 <- Arima(subfatalities, order=c(0,1,1), seasonal=list(order = c(0, 1, 1), period = 12))
 
+plot(forecast(fit4, h=12))
+lines(vix[c(1:755),1], vxo[c(1:755),5], type="l", lty=1, col=plot_colours1[2])
 
-
+preddiff<-abs(as.data.frame(forecast(fit4, h=12))$`Point Forecast`-fatalities[c(169:180)])
+sd(preddiff)
+View(preddiff)
