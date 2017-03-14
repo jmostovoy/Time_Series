@@ -2,6 +2,8 @@
 library(stats)
 library(tseries)
 library(forecast)
+install.packages("fpp")
+library(forecast)
 
 ####Question 1####
 
@@ -27,7 +29,7 @@ adf.test(dollar,k=9)
 adf.test(dollar,k=10)
 adf.test(dollar,k=11)
 adf.test(dollar,k=12)
-adf.test(dollar,k=13)
+x<-adf.test(dollar,k=13)
 
 #Part B
 
@@ -35,6 +37,9 @@ source("bartlett.txt")
 bartlett(returns)
 Box.test(returns,lag=10,type="Ljung")
 Box.test(returns,lag=9,type="Ljung")
+Box.test(returns,lag=20,type="Ljung")
+Box.test(returns,lag=40,type="Ljung")
+
 
 
 #### QUESTION 2 ####
@@ -42,66 +47,137 @@ Box.test(returns,lag=9,type="Ljung")
 yield <- scan(file="yield.txt")
 yield <- ts(yield)
 View(yield)
-ddollar <- diff(dollar)
-View(ddollar)
+dyield <- diff(yield)
+View(dyield)
 
 #Part A
 
-Box.test(ddollar,type="Ljung")
-Box.test(ddollar,lag=9,type="Ljung")
+Box.test(dyield,type="Ljung")
+Box.test(dyield,lag=9,type="Ljung")
+bartlett(dyield)
+acf(dyield)
+pacf(dyield)
+arima.yield <- arima(yield, order=c(0,1,0))
+acf(arima.yield$residuals)
+bartlett(arima.yield$residuals)
+Box.test(arima.yield$residuals,lag=10,type="Ljung")
+
 
 #Part B
 
-z<-arima(dollar, c(1, 1, 1))
+z<-arima(yield, c(1, 1, 1))
 z$aic
-z<-arima(dollar, c(2, 1, 2))
+z<-arima(yield, c(2, 1, 2))
 z$aic
-z<-arima(dollar, c(3, 1, 3))
+z<-arima(yield, c(3, 1, 3))
 z$aic
 
 #Part C
-z<-arima(dollar, c(1, 1, 2))
+z<-arima(yield, c(0, 1, 0))
 z$aic
-z<-arima(dollar, c(1, 1, 3))
+z<-arima(yield, c(0, 1, 1))
 z$aic
-y<-arima(dollar, c(2, 1, 1))
+y<-arima(yield, c(0, 1, 2))
 y$aic
-z<-arima(dollar, c(2, 1, 3))
+y<-arima(yield, c(0, 1, 3))
+y$aic
+y<-arima(yield, c(0, 1, 4))
+y$aic
+z<-arima(yield, c(1, 1, 0))
 z$aic
-z<-arima(dollar, c(3, 1, 1))
+z<-arima(yield, c(1, 1, 2))
 z$aic
-z<-arima(dollar, c(3, 1, 2))
+z<-arima(yield, c(1, 1, 3))
+z$aic
+z<-arima(yield, c(1, 1, 4))
+z$aic
+y<-arima(yield, c(2, 1, 1))
+y$aic
+z<-arima(yield, c(2, 1, 3))
+z$aic
+z<-arima(yield, c(3, 1, 0))
+z$aic
+z<-arima(yield, c(3, 1, 1))
+z$aic
+z<-arima(yield, c(3, 1, 2))
+z$aic
+z<-arima(yield, c(3, 1, 4))
+z$aic
+z<-arima(yield, c(4, 1, 0))
+z$aic
+z<-arima(yield, c(4, 1, 1))
+z$aic
+z<-arima(yield, c(4, 1, 2))
+z$aic
+z<-arima(yield, c(4, 1, 3))
+z$aic
+z<-arima(yield, c(4, 1, 4))
+z$aic
+z<-arima(yield, c(6, 1, 6))
 z$aic
 
-auto.arima(dollar)
+
+z<-data.frame(c(1:5),c(1:5),c(1:5),c(1:5),c(1:5))
+for (i in c(1:5)) {
+  for (j in c(1:5)) {
+    z[i,j]<-arima(yield, c(i, 1, j))$aic
+  }
+}
+z
+
+auto.arima(yield)
 
 #Part D
-Box.test(y$residuals)
-tsdiag(y)
+
+Box.test(arima(yield,c(3, 1, 3))$residuals, lag=10)
+bartlett(arima(yield,c(3, 1, 3))$residuals)
+acf(arima(yield,c(3, 1, 3))$residuals)
+pacf(arima(yield,c(3, 1, 3))$residuals)
+tsdiag(arima(yield,c(3, 1, 3)))
 
 
 ####QUESTION 3 ####
 
 fatalities <- scan(file="fatalities.txt")
-fatalities <- ts(fatalities)
-View(fatalities)
+lfatalities <- ts(log(fatalities))
+View(lfatalities)
+
 
 #Part A
 
 #(i)
-ddfatalities <- diff(diff(fatalities))
-View(ddfatalities)
+dlfatalities <- diff(diff(lfatalities,lag=12), lag=1)
+View(dlfatalities)
 
 #(ii)
 
-acf(ddfatalities)
-pacf(ddfatalities)
+acf(dlfatalities, lag.max = 40)
+pacf(dlfatalities,  lag.max = 40)
+
+#test
+fit3 <- Arima(dlfatalities, order=c(0,1,1), seasonal=list(order = c(0, 1, 1), period = 12))
+res <- residuals(fit3)
+tsdisplay(res)
+Box.test(res, lag=16, fitdf=4, type="Ljung")
+
+
+fit3 <- Arima(euretail, order=c(0,1,3), seasonal=c(0,1,1))
+res <- residuals(fit3)
+tsdisplay(res)
+Box.test(res, lag=16, fitdf=4, type="Ljung")
+
+data(euretail, package = "fpp")
 
 #implies MA(3) - I think...
 
 #(iii)
-auto.arima(ddfatalities)
-g<-arima(ddfatalities)
+auto.arima(dlfatalities)
+g<-arima(dlfatalities)
+acf(arima(dlfatalities, order = c(0, 1, 1),
+      seasonal = list(order = c(0, 1, 1), period = 12))$residuals)
+arima(dlfatalities, order = c(1, 1, 1),
+      seasonal = list(order = c(1, 1, 1), period = 12))$aic
+sarima(dlfatalities,0,1,1,0,1,1,12)
 
 #(iv)
 Box.test(g$residuals)
