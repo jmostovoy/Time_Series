@@ -24,6 +24,10 @@ adf.test(dollar,k=6)
 adf.test(dollar,k=7)
 adf.test(dollar,k=8)
 adf.test(dollar,k=9)
+adf.test(dollar,k=10)
+adf.test(dollar,k=11)
+adf.test(dollar,k=12)
+adf.test(dollar,k=13)
 
 #Part B
 
