@@ -1,17 +1,11 @@
-# Section One ---------------------------------
-
-# Section Two =================================
-
-### Section Three ############################# 
-
-### Section Three #############################
-####Preamble####
+### Preamble #############################
 library(stats)
 library(tseries)
 library(forecast)
 install.packages("fpp")
 library(forecast)
 library(xtable)
+
 
 ### Question 1 #############################
 
@@ -46,7 +40,7 @@ xtable(t(as.data.frame(boxreturns_pvalue)), digits = 3)
 View(returns)
 
 
-### QUESTION 2 ############################# 
+### Question 2 ############################# 
 
 #Import Data
 
@@ -63,7 +57,7 @@ for (i in c(1:20)) {
   adfyield_pvalue[i]<-adf.test(yield,k=i)$p.value
 }
 adfyield_pvalue
-
+xtable(t(as.data.frame(adfyield_pvalue)), digits = 3)
 
 #Box Test for Stationarity on Original Data
 boxyield_pvalue<-c(1:15)
@@ -77,8 +71,8 @@ bartlett(Arima(yield, order=c(0,1,0))$residuals)
 
 #ACF & PACF of Fitted Residuals
 fit1 <- Arima(yield, order=c(0,1,0))
-res1 <- residuals(fit1)
-tsdisplay(res1)
+ARIMA_0_1_0_Residuals <- residuals(fit1)
+tsdisplay(ARIMA_0_1_0_Residuals)
 
 #Box Test for White Noise in ARIMA(0,1,0)
 boxdyield_pvalue<-c(1:15)
@@ -86,6 +80,7 @@ for (i in c(1:15)) {
   boxdyield_pvalue[i]<-Box.test(Arima(yield, order=c(0,1,0))$residuals,lag=i,type="Ljung")$p.value
 }
 boxdyield_pvalue
+xtable(t(as.data.frame(10^6*boxdyield_pvalue)), digits = 3)
 
 # Part B =================================
 arima_p_1_p_aic<-c(1:3)
@@ -114,7 +109,7 @@ pacf(arima(yield,c(3, 1, 3))$residuals)
 tsdiag(arima(yield,c(3, 1, 3)))
 
 
-### QUESTION 3 ############################# 
+### Question 3 ############################# 
 
 fatalities <- scan(file="fatalities.txt")
 lfatalities <- ts(log(fatalities))
