@@ -1,9 +1,16 @@
+# Section One ---------------------------------
+
+# Section Two =================================
+
+### Section Three ############################# 
+
 ####Preamble####
 library(stats)
 library(tseries)
 library(forecast)
 install.packages("fpp")
 library(forecast)
+library(xtable)
 
 ####Question 1####
 
@@ -16,33 +23,30 @@ returns <- diff(dollar)
 View(returns)
 
 #Part A
+adfdollar_pvalue<-c(1:20)
+for (i in c(1:20)) {
+  adfdollar_pvalue[i]<-adf.test(dollar,k=i)$p.value
+}
+adfdollar_pvalue
 
-adf.test(dollar,k=1)
-adf.test(dollar,k=2)
-adf.test(dollar,k=3)
-adf.test(dollar,k=4)
-adf.test(dollar,k=5)
-adf.test(dollar,k=6)
-adf.test(dollar,k=7)
-adf.test(dollar,k=8)
-adf.test(dollar,k=9)
-adf.test(dollar,k=10)
-adf.test(dollar,k=11)
-adf.test(dollar,k=12)
-x<-adf.test(dollar,k=13)
+xtable(t(as.data.frame(adfdollar_pvalue)), digits = 3)
 
 #Part B
 
 source("bartlett.txt")
 bartlett(returns)
-Box.test(returns,lag=10,type="Ljung")
-Box.test(returns,lag=9,type="Ljung")
-Box.test(returns,lag=20,type="Ljung")
-Box.test(returns,lag=40,type="Ljung")
+boxreturns_pvalue<-c(1:15)
+for (i in c(1:15)) {
+  boxreturns_pvalue[i]<-Box.test(returns,lag=i,type="Ljung")$p.value
+}
+boxreturns_pvalue
+xtable(t(as.data.frame(boxreturns_pvalue)), digits = 3)
 
-
+View(returns)
 
 #### QUESTION 2 ####
+
+#Import Data
 
 yield <- scan(file="yield.txt")
 yield <- ts(yield)
@@ -51,80 +55,55 @@ dyield <- diff(yield)
 View(dyield)
 
 #Part A
-
-Box.test(dyield,type="Ljung")
-Box.test(dyield,lag=9,type="Ljung")
-bartlett(dyield)
-acf(dyield)
-pacf(dyield)
-arima.yield <- arima(yield, order=c(0,1,0))
-acf(arima.yield$residuals)
-bartlett(arima.yield$residuals)
-Box.test(arima.yield$residuals,lag=10,type="Ljung")
+#ADF Test for Non-stationarity on Original Data
+adfyield_pvalue<-c(1:20)
+for (i in c(1:20)) {
+  adfyield_pvalue[i]<-adf.test(yield,k=i)$p.value
+}
+adfyield_pvalue
 
 
-#Part B
+#Box Test for Stationarity on Original Data
+boxyield_pvalue<-c(1:15)
+for (i in c(1:15)) {
+  boxyield_pvalue[i]<-Box.test(yield,lag=i,type="Ljung")$p.value
+}
+boxyield_pvalue
 
-z<-arima(yield, c(1, 1, 1))
-z$aic
-z<-arima(yield, c(2, 1, 2))
-z$aic
-z<-arima(yield, c(3, 1, 3))
-z$aic
+#Bartlett Test for ARIMA(0,1,0) Residuals
+bartlett(Arima(yield, order=c(0,1,0))$residuals)
+
+#ACF & PACF of Fitted Residuals
+fit1 <- Arima(yield, order=c(0,1,0))
+res1 <- residuals(fit1)
+tsdisplay(res1)
+
+#Box Test for White Noise in ARIMA(0,1,0)
+boxdyield_pvalue<-c(1:15)
+for (i in c(1:15)) {
+  boxdyield_pvalue[i]<-Box.test(Arima(yield, order=c(0,1,0))$residuals,lag=i,type="Ljung")$p.value
+}
+boxdyield_pvalue
+
+##Part B
+
+arima_p_1_p_aic<-c(1:3)
+for (i in c(1:3)) {
+  arima_p_1_p_aic[i]<-arima(yield, c(i, 1, i))$aic
+}
+arima_p_1_p_aic
 
 #Part C
-z<-arima(yield, c(0, 1, 0))
-z$aic
-z<-arima(yield, c(0, 1, 1))
-z$aic
-y<-arima(yield, c(0, 1, 2))
-y$aic
-y<-arima(yield, c(0, 1, 3))
-y$aic
-y<-arima(yield, c(0, 1, 4))
-y$aic
-z<-arima(yield, c(1, 1, 0))
-z$aic
-z<-arima(yield, c(1, 1, 2))
-z$aic
-z<-arima(yield, c(1, 1, 3))
-z$aic
-z<-arima(yield, c(1, 1, 4))
-z$aic
-y<-arima(yield, c(2, 1, 1))
-y$aic
-z<-arima(yield, c(2, 1, 3))
-z$aic
-z<-arima(yield, c(3, 1, 0))
-z$aic
-z<-arima(yield, c(3, 1, 1))
-z$aic
-z<-arima(yield, c(3, 1, 2))
-z$aic
-z<-arima(yield, c(3, 1, 4))
-z$aic
-z<-arima(yield, c(4, 1, 0))
-z$aic
-z<-arima(yield, c(4, 1, 1))
-z$aic
-z<-arima(yield, c(4, 1, 2))
-z$aic
-z<-arima(yield, c(4, 1, 3))
-z$aic
-z<-arima(yield, c(4, 1, 4))
-z$aic
-z<-arima(yield, c(6, 1, 6))
-z$aic
 
-
-z<-data.frame(c(1:5),c(1:5),c(1:5),c(1:5),c(1:5))
-for (i in c(1:5)) {
-  for (j in c(1:5)) {
-    z[i,j]<-arima(yield, c(i, 1, j))$aic
+arima_p_1_q_aic<-data.frame(c(1:6),c(1:6),c(1:6),c(1:6),c(1:6),c(1:6))
+for (i in c(0:5)) {
+  for (j in c(0:5)) {
+    arima_p_1_q_aic[i+1,j+1]<-arima(yield, c(i, 1, j))$aic
   }
 }
-z
+arima_p_1_q_aic
 
+#note also
 auto.arima(yield)
 
 #Part D
@@ -155,11 +134,30 @@ acf(dlfatalities, lag.max = 40)
 pacf(dlfatalities,  lag.max = 40)
 
 #(iii)
+sarima_p_1_q_aic<-data.frame(c(1:5),c(1:5),c(1:5),c(1:5),c(1:5),c(1:5))
+for (i in c(0:4)) {
+  for (j in c(0:5)) {
+    sarima_p_1_q_aic[i+1,j+1]<-Arima(fatalities, order=c(i,1,j), seasonal=list(order = c(i, 1, j), period = 12))$aic
+  }
+}
+
+for (i in c(3)) {
+  for (j in c(0, 2, 3, 4,5)) {
+    sarima_p_1_q_aic[i+1,j+1]<-Arima(fatalities, order=c(i,1,j), seasonal=list(order = c(i, 1, j), period = 12))$aic
+  }
+}
+sarima_p_1_q_aic
+xtable(sarima_p_1_q_aic, digits = 3)
+
+
 Arima(fatalities, order=c(1,1,0), seasonal=list(order = c(1, 1, 0), period = 12))$aic
 Arima(fatalities, order=c(0,1,1), seasonal=list(order = c(0, 1, 1), period = 12))$aic
 Arima(fatalities, order=c(1,1,1), seasonal=list(order = c(1, 1, 1), period = 12))$aic
 Arima(fatalities, order=c(0,1,2), seasonal=list(order = c(0, 1, 2), period = 12))$aic
-Arima(fatalities, order=c(1,1,2), seasonal=list(order = c(1, 1, 2), period = 12))$aic
+Arima(fatalities, order=c(3,1,1), seasonal=list(order = c(3, 1, 1), period = 12))$aic
+Arima(fatalities, order=c(4,1,1), seasonal=list(order = c(4, 1, 1), period = 12))$aic
+Arima(fatalities, order=c(4,1,5), seasonal=list(order = c(4, 1, 5), period = 12))$aic
+Arima(fatalities, order=c(5,1,1), seasonal=list(order = c(5, 1, 1), period = 12))$aic
 
 #(iiii)
 fit3 <- Arima(fatalities, order=c(0,1,1), seasonal=list(order = c(0, 1, 1), period = 12))
@@ -179,8 +177,9 @@ subfatalities<-fatalities[c(1:168)]
 fit4 <- Arima(subfatalities, order=c(0,1,1), seasonal=list(order = c(0, 1, 1), period = 12))
 
 plot(forecast(fit4, h=12))
-lines(vix[c(1:755),1], vxo[c(1:755),5], type="l", lty=1, col=plot_colours1[2])
+lines(c(169:180), fatalities[c(169:180)], type="l", lty=1, col=c(2))
+legend(0, 250, c("Predicted Values", "Realized Values"), lty=c(1,1), lwd=c(2.5,2.5), col=c(4,2),bty = "n")
 
+#standard deviation in absolute difference between predicted values and realized
 preddiff<-abs(as.data.frame(forecast(fit4, h=12))$`Point Forecast`-fatalities[c(169:180)])
 sd(preddiff)
-View(preddiff)
