@@ -4,6 +4,7 @@
 
 ### Section Three ############################# 
 
+### Section Three #############################
 ####Preamble####
 library(stats)
 library(tseries)
@@ -12,7 +13,7 @@ install.packages("fpp")
 library(forecast)
 library(xtable)
 
-####Question 1####
+### Question 1 #############################
 
 #Import Data
 setwd("~/Documents/Time_Series")
@@ -22,7 +23,7 @@ View(dollar)
 returns <- diff(dollar)
 View(returns)
 
-#Part A
+# Part A =================================
 adfdollar_pvalue<-c(1:20)
 for (i in c(1:20)) {
   adfdollar_pvalue[i]<-adf.test(dollar,k=i)$p.value
@@ -31,7 +32,7 @@ adfdollar_pvalue
 
 xtable(t(as.data.frame(adfdollar_pvalue)), digits = 3)
 
-#Part B
+# Part B =================================
 
 source("bartlett.txt")
 bartlett(returns)
@@ -44,7 +45,8 @@ xtable(t(as.data.frame(boxreturns_pvalue)), digits = 3)
 
 View(returns)
 
-#### QUESTION 2 ####
+
+### QUESTION 2 ############################# 
 
 #Import Data
 
@@ -54,7 +56,7 @@ View(yield)
 dyield <- diff(yield)
 View(dyield)
 
-#Part A
+# Part A =================================
 #ADF Test for Non-stationarity on Original Data
 adfyield_pvalue<-c(1:20)
 for (i in c(1:20)) {
@@ -85,16 +87,14 @@ for (i in c(1:15)) {
 }
 boxdyield_pvalue
 
-##Part B
-
+# Part B =================================
 arima_p_1_p_aic<-c(1:3)
 for (i in c(1:3)) {
   arima_p_1_p_aic[i]<-arima(yield, c(i, 1, i))$aic
 }
 arima_p_1_p_aic
 
-#Part C
-
+# Part C =================================
 arima_p_1_q_aic<-data.frame(c(1:6),c(1:6),c(1:6),c(1:6),c(1:6),c(1:6))
 for (i in c(0:5)) {
   for (j in c(0:5)) {
@@ -106,8 +106,7 @@ arima_p_1_q_aic
 #note also
 auto.arima(yield)
 
-#Part D
-
+# Part D =================================
 Box.test(arima(yield,c(3, 1, 3))$residuals, lag=10)
 bartlett(arima(yield,c(3, 1, 3))$residuals)
 acf(arima(yield,c(3, 1, 3))$residuals)
@@ -115,25 +114,22 @@ pacf(arima(yield,c(3, 1, 3))$residuals)
 tsdiag(arima(yield,c(3, 1, 3)))
 
 
-####QUESTION 3 ####
+### QUESTION 3 ############################# 
 
 fatalities <- scan(file="fatalities.txt")
 lfatalities <- ts(log(fatalities))
 View(lfatalities)
 
-
-#Part A
-
-#(i)
+# Part A =================================
+# (i) ---------------------------------
 dlfatalities <- diff(diff(lfatalities,lag=12), lag=1)
 View(dlfatalities)
 
-#(ii)
-
+# (ii) ---------------------------------
 acf(dlfatalities, lag.max = 40)
 pacf(dlfatalities,  lag.max = 40)
 
-#(iii)
+# (iii) ---------------------------------
 sarima_p_1_q_aic<-data.frame(c(1:5),c(1:5),c(1:5),c(1:5),c(1:5),c(1:5))
 for (i in c(0:4)) {
   for (j in c(0:5)) {
@@ -159,7 +155,7 @@ Arima(fatalities, order=c(4,1,1), seasonal=list(order = c(4, 1, 1), period = 12)
 Arima(fatalities, order=c(4,1,5), seasonal=list(order = c(4, 1, 5), period = 12))$aic
 Arima(fatalities, order=c(5,1,1), seasonal=list(order = c(5, 1, 1), period = 12))$aic
 
-#(iiii)
+# (iiii) ---------------------------------
 fit3 <- Arima(fatalities, order=c(0,1,1), seasonal=list(order = c(0, 1, 1), period = 12))
 res <- residuals(fit3)
 tsdisplay(res)
@@ -167,12 +163,10 @@ Box.test(res, lag=12, type="Ljung")
 Box.test(res, lag=5, type="Ljung")
 bartlett(res)
 
-
-#Part 2
+# Part 2 =================================
 plot(forecast(fit3, h=12))
 
-#Part 3
-
+# Part 3 =================================
 subfatalities<-fatalities[c(1:168)]
 fit4 <- Arima(subfatalities, order=c(0,1,1), seasonal=list(order = c(0, 1, 1), period = 12))
 
