@@ -32,7 +32,8 @@ source("bartlett.txt")
 bartlett(returns)
 boxreturns_pvalue<-c(1:15)
 for (i in c(1:15)) {
-  boxreturns_pvalue[i]<-Box.test(returns,lag=i,type="Ljung")$p.value
+  boxreturns_pvalue[i]<-Box.test(returns,
+                                 lag=i,type="Ljung")$p.value
 }
 boxreturns_pvalue
 xtable(t(as.data.frame(boxreturns_pvalue)), digits = 3)
@@ -62,7 +63,8 @@ xtable(t(as.data.frame(adfyield_pvalue)), digits = 3)
 #Box Test for Stationarity on Original Data
 boxyield_pvalue<-c(1:15)
 for (i in c(1:15)) {
-  boxyield_pvalue[i]<-Box.test(yield,lag=i,type="Ljung")$p.value
+  boxyield_pvalue[i]<-Box.test(yield,
+                               lag=i,type="Ljung")$p.value
 }
 boxyield_pvalue
 
@@ -77,7 +79,9 @@ tsdisplay(ARIMA_0_1_0_Residuals)
 #Box Test for White Noise in ARIMA(0,1,0)
 boxdyield_pvalue<-c(1:15)
 for (i in c(1:15)) {
-  boxdyield_pvalue[i]<-Box.test(Arima(yield, order=c(0,1,0))$residuals,lag=i,type="Ljung")$p.value
+  boxdyield_pvalue[i]<-Box.test(Arima(yield, 
+                          order=c(0,1,0))$residuals,
+                          lag=i,type="Ljung")$p.value
 }
 boxdyield_pvalue
 xtable(t(as.data.frame(10^6*boxdyield_pvalue)), digits = 3)
@@ -118,14 +122,16 @@ tsdisplay(residuals(arima(yield,c(5, 1, 4))))
 
 boxdyield_pvalue_3_1_3<-c(1:15)
 for (i in c(1:15)) {
-  boxdyield_pvalue_3_1_3[i]<-Box.test(Arima(yield, order=c(3,1,3))$residuals,lag=i,type="Ljung")$p.value
+  boxdyield_pvalue_3_1_3[i]<-Box.test(Arima(yield, 
+                          order=c(3,1,3))$residuals,lag=i,type="Ljung")$p.value
 }
 boxdyield_pvalue_3_1_3
 xtable(t(as.data.frame(boxdyield_pvalue_3_1_3)), digits = 3)
 
 boxdyield_pvalue_5_1_4<-c(1:15)
 for (i in c(1:15)) {
-  boxdyield_pvalue_5_1_4[i]<-Box.test(Arima(yield, order=c(5,1,4))$residuals,lag=i,type="Ljung")$p.value
+  boxdyield_pvalue_5_1_4[i]<-Box.test(Arima(yield, 
+                    order=c(5,1,4))$residuals,lag=i,type="Ljung")$p.value
 }
 boxdyield_pvalue_5_1_4
 xtable(t(as.data.frame(boxdyield_pvalue_5_1_4)), digits = 3)
@@ -159,20 +165,24 @@ pacf(dlfatalities)
 sarima_p_1_q_aic<-data.frame(c(1:5),c(1:5),c(1:5),c(1:5),c(1:5),c(1:5))
 for (i in c(0:4)) {
   for (j in c(0:5)) {
-    sarima_p_1_q_aic[i+1,j+1]<-Arima(lfatalities, order=c(i,1,j), seasonal=list(order = c(i, 1, j), period = 12))$aic
+    sarima_p_1_q_aic[i+1,j+1]<-Arima(lfatalities, order=c(i,1,j),
+                          seasonal=list(order = c(i, 1, j), period = 12))$aic
   }
 }
 
 for (i in c(3)) {
   for (j in c(0, 2, 3, 4,5)) {
-    sarima_p_1_q_aic[i+1,j+1]<-Arima(lfatalities, order=c(i,1,j), seasonal=list(order = c(i, 1, j), period = 12))$aic
+    sarima_p_1_q_aic[i+1,j+1]<-Arima(lfatalities, order=c(i,1,j), 
+                                     seasonal=list(order = c(i, 1, j), 
+                                                   period = 12))$aic
   }
 }
 sarima_p_1_q_aic
 xtable(sarima_p_1_q_aic, digits = 3)
 
 # (iiii) ---------------------------------
-fit3 <- Arima(lfatalities, order=c(0,1,1), seasonal=list(order = c(0, 1, 1), period = 12))
+fit3 <- Arima(lfatalities, order=c(0,1,1), 
+              seasonal=list(order = c(0, 1, 1), period = 12))
 res <- residuals(fit3)
 tsdisplay(res)
 bartlett(res)
@@ -191,16 +201,21 @@ fo<-forecast(fit3, h=12)
 fo$upper[,c(2)]
 fo$mean
 fo$lower[,c(2)]
-xtable(as.data.frame(t(as.data.frame((fo$mean), (fo$upper[,c(2)]), fo$lower[,c(2)]))))
-
+xtable(as.data.frame(t(as.data.frame((fo$mean), (fo$upper[,c(2)]), 
+                                     fo$lower[,c(2)]))))
+forecast(fit3, h=12)
 # Part 3 =================================
 subfatalities<-lfatalities[c(1:168)]
-fit4 <- Arima(subfatalities, order=c(0,1,1), seasonal=list(order = c(0, 1, 1), period = 12))
+fit4 <- Arima(subfatalities, order=c(0,1,1), 
+              seasonal=list(order = c(0, 1, 1), period = 12))
 
 plot(forecast(fit4, h=12))
-lines(c(169:180), lfatalities[c(169:180)], type="l", lty=1, col=c(2))
-legend(0, 5.6, c("Predicted Values", "Realized Values"), lty=c(1,1), lwd=c(2.5,2.5), col=c(4,2),bty = "n")
+lines(c(169:180), lfatalities[c(169:180)], type="l", 
+      lty=1, col=c(2))
+legend(0, 5.6, c("Predicted Values", "Realized Values"), 
+       lty=c(1,1), lwd=c(2.5,2.5), col=c(4,2),bty = "n")
 
 #standard deviation in absolute difference between predicted values and realized
-preddiff<-abs(as.data.frame(forecast(fit4, h=12))$`Point Forecast`-lfatalities[c(169:180)])
+preddiff<-abs(as.data.frame(forecast(fit4, 
+                      h=12))$`Point Forecast`-lfatalities[c(169:180)])
 sd(preddiff)
