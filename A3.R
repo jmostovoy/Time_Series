@@ -2,10 +2,7 @@
 library(stats)
 library(tseries)
 library(forecast)
-install.packages("fpp")
-library(forecast)
 library(xtable)
-
 
 ### Question 1 #############################
 
@@ -101,7 +98,7 @@ for (i in c(0:5)) {
   }
 }
 arima_p_1_q_aic
-xtable(t(as.data.frame(arima_p_1_q_aic)), digits = 3)
+xtable(as.data.frame(arima_p_1_q_aic), digits = 3)
 
 #note also
 auto.arima(yield)
@@ -109,14 +106,14 @@ auto.arima(yield)
 # Part D =================================
 #Bartlett Tests
 bartlett(arima(yield,c(3, 1, 3))$residuals)
-bartlett(arima(yield,c(5, 1, 4))$residuals)
+bartlett(arima(yield,c(4, 1, 5))$residuals)
 
 #Tsdiag
 tsdiag(arima(yield,c(3, 1, 3)))
 tsdisplay(residuals(arima(yield,c(3, 1, 3))))
 
-tsdiag(arima(yield,c(5, 1, 4)))
-tsdisplay(residuals(arima(yield,c(5, 1, 4))))
+tsdiag(arima(yield,c(4, 1, 5)))
+tsdisplay(residuals(arima(yield,c(4, 1, 5))))
 
 #Box Tests
 
@@ -128,17 +125,17 @@ for (i in c(1:15)) {
 boxdyield_pvalue_3_1_3
 xtable(t(as.data.frame(boxdyield_pvalue_3_1_3)), digits = 3)
 
-boxdyield_pvalue_5_1_4<-c(1:15)
+boxdyield_pvalue_4_1_5<-c(1:15)
 for (i in c(1:15)) {
-  boxdyield_pvalue_5_1_4[i]<-Box.test(Arima(yield, 
-                    order=c(5,1,4))$residuals,lag=i,type="Ljung")$p.value
+  boxdyield_pvalue_4_1_5[i]<-Box.test(Arima(yield, 
+                    order=c(4,1,5))$residuals,lag=i,type="Ljung")$p.value
 }
-boxdyield_pvalue_5_1_4
-xtable(t(as.data.frame(boxdyield_pvalue_5_1_4)), digits = 3)
+boxdyield_pvalue_4_1_5
+xtable(t(as.data.frame(boxdyield_pvalue_4_1_5)), digits = 3)
 
 #QQ Plot To Determine Normality or Not
-qqnorm(Arima(yield, order=c(5,1,4))$residuals)
-qqline(Arima(yield, order=c(5,1,4))$residuals)
+qqnorm(Arima(yield, order=c(4,1,5))$residuals)
+qqline(Arima(yield, order=c(4,1,5))$residuals)
 
 qqnorm(Arima(yield, order=c(3,1,3))$residuals)
 qqline(Arima(yield, order=c(3,1,3))$residuals)
@@ -219,3 +216,12 @@ legend(0, 5.6, c("Predicted Values", "Realized Values"),
 preddiff<-abs(as.data.frame(forecast(fit4, 
                       h=12))$`Point Forecast`-lfatalities[c(169:180)])
 sd(preddiff)
+
+# Table of Values
+
+fo1<-forecast(fit4, h=12)
+xtable(t(as.data.frame(fo1$lower[,c(2)])))
+xtable(t(as.data.frame(fo1$mean)))
+xtable(t(as.data.frame(lfatalities[c(169:180)])))
+fo1$lower[,c(2)]
+
