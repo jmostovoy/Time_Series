@@ -1,0 +1,50 @@
+spec.parzen <- function(x,maxlag,nfreq,plot=T) {
+       f <- 1
+       if (is.ts(x)) f <- frequency(x)
+       x <- as.vector(x[!is.na(x)])
+       n <- length(x)
+       x <- x - mean(x)
+       if (missing(maxlag)) maxlag <- n - 1
+       if (maxlag >= n) maxlag <- n - 1
+       if (maxlag <= 1) maxlag <- 2
+       k <- ceiling(log(n+maxlag)/log(2))
+       nn <- 2^k
+       m <- nn/2
+       if (missing(nfreq)) nfreq <- m
+       if (nfreq < m) nfreq <- m
+       if (nfreq > m) {
+               k <- 1 + ceiling(log(nfreq)/log(2))
+               nn <- 2^k
+               nfreq <- nn/2
+               }
+       x <- c(x,rep(0,nn-n))
+       if (missing(maxlag)) maxlag <- n - 1
+       if (maxlag >= n) maxlag <- n - 1
+       if (maxlag <= 1) maxlag <- 2
+       k1 <- floor(maxlag/2)
+       k2 <- maxlag
+       k <- c(0:k1)
+       window <- 1 - 6*(k/maxlag)^2 + 6*(k/maxlag)^3
+       k <- c((k1+1):k2)
+       window <- c(window,2*(1-k/maxlag)^3)
+       if (maxlag < nn) window <- c(window,rep(0,nn-maxlag-1))
+       spec <- Mod(fft(x))^2/n
+       ac <- Re(fft(spec,inv=T))/nn
+       ac <- ac*window
+       spec <- 2*Re(fft(ac))-ac[1]
+       spec <- 10*log10(spec[1:(nfreq+1)])
+       freq <- f*c(0:nfreq)/nn
+       se <- 4.342945*sqrt(0.539*maxlag/n)
+       if (plot) {
+         lims <- c(min(spec - 1.96*se),max(spec + 1.96*se))
+         plot(freq,spec,type="l",xlab="frequency",ylab="spectrum",ylim=lims)
+         lines(freq,spec + 1.96*se,lty=2)
+         lines(freq,spec - 1.96*se,lty=2)
+         ttl <- paste("Parzen's window with M=",maxlag)
+         title(sub=ttl)
+         }
+       std.err <- se
+       r <- list(frequency=freq,spec=spec,M=maxlag,std.err=std.err)
+       r
+       }
+       
