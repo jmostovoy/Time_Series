@@ -8,6 +8,7 @@ library(fGarch)
 library(FinTS)
 source("bartlett.txt")
 source("spec.parzen.txt")
+library(ggplot2)
 
 
 ### Question 1 ###
@@ -58,7 +59,7 @@ plot(r_opt, main = "R_Opt")
 ### Question 1 #############################
 
 #Import Data
-setwd("~/Documents/Time_Series")
+setwd("~/Documents/Time_Series/plotsA4")
 fatal <- scan(file="fatalities.txt")
 fatal <- ts(log(fatal), start=c(1960,1),end=c(1974,12),freq=12)
 View(fatal)
@@ -78,21 +79,30 @@ tmp <- list(s1=a, s3=b, s5=c, s7=d, s9=e, s11=f)
 stls[[name]] <- tmp
 }
 
-for (i in c(1:50)){
+for (i in c(9:50)){
   for (j in c(1:6)) {
-    plot(stls[[i]][[j]])
-    title(outer=paste("stl for ", "t",2*i-1 ,"s", 2*j-1, sep = ""), col.main="forestgreen", font.main=3)
+    pdf(paste("stl_", "t_",2*i-1, "_s_", 2*j-1,".pdf", sep = ""))
+    plot(stls[[i]][[j]],main=paste("stl for ", "t=",2*i-1, " " ,"and s=", 2*j-1, sep = ""))
+    dev.off()
   }
 }
 
-plot(stls[[1]][[1]])
-title(main=paste("stl for ", "t",2*1-1 ,"s", 2*1-1, sep = ""), col.main="forestgreen", font.main=3)
-
-get("stls$t1$s1")$get(paste("t",1,sep=""))$s1
-
 
 # Part B =================================
+
+for (i in c(9:50)){
+  for (j in c(1:6)) {
+    acf(stls[[i]][[j]]$time.series[,3],
+        main=paste("acf of stl's irregular component for ", "t=",2*i-1, " " ,"and s=", 2*j-1, sep = ""))
+  }
+}
+
+pacf(as.datafra(stls[[13]][[3]]$time.series[,3]))
+stls[[1]][[1]]$time.series
+
 # Part C =================================
+
+
 
 ### Question 2 #############################
 speech <- ts(scan(file="speech.txt"),frequency=10000)
