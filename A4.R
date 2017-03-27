@@ -10,52 +10,6 @@ source("bartlett.txt")
 source("spec.parzen.txt")
 library(ggplot2)
 
-
-### Question 1 ###
-fatal <- scan("fatalities.txt")
-fatal <- ts(fatal, start=c(1960,1),end=c(1974,12),freq=12)
-
-# want to pick the param on stl to minimize the remainder (i.e. explain most)
-# as such we play around with the parametres to see which combination is best
-
-# begin with extreme cases
-
-# seasonal smoothing with only 1 month and trend with 11 months 
-r1 <- stl(fatal, s.window = 1, t.window = 11, robust = T)
-plot(r1, main = "R1")
-# seasonal smoothing with "periodic" (i.e. 11 months) and trend with 167 months
-r2 <- stl(fatal, s.window = 11, t.window = 167)
-plot(r2, main = "R2")
-r2$time.series[,c(1)]
-
-# try to optimize with logical choices of parametres 
-
-# seasonal smoothing with only 3 month (spring, summer, fall, winter as the number of 
-# crashes in each of the seasons is expected to vary) and trend with 11 months
-r3 <- stl(fatal, s.window = 3, t.window = 11)
-plot(r3, main = "R3")
-
-# seasonal smoothing with semi-annual (wet vs. dry season) and trend with 11 months (1 year)
-r4 <- stl(fatal, s.window = 6, t.window = 11)
-plot(r4, main = "R4")
-
-
-# seasonal smoothing with semi-annual (wet vs. dry season) and trend with 23 months (2 year))
-r5 <- stl(fatal, s.window = 3, t.window = 23)
-plot(r5, main = "R5")
-# seasonal smoothing with semi-annual and trend with 23 months (2 year)
-r6 <- stl(fatal, s.window = 6, t.window = 23)
-plot(r6, main = "R6")
-
-
-# seasonal smoothing with semi-annual (wet vs. dry season) and trend with 11 months (1 year)
-r4 <- stl(fatal, s.window = 6, t.window = 11)
-plot(r4, main = "R4")
-
-# seasonal smoothing with 3 months and trend with 47 months (4 years)
-r_opt <- stl(fatal, s.window = 3, t.window = 47)
-plot(r_opt, main = "R_Opt")
-
 ### Question 1 #############################
 
 #Import Data
@@ -67,7 +21,7 @@ View(fatal)
 # Part A =================================
 
 stls <- list()
-for(i in seq(1, 99, 2)){
+for(i in seq(1, 167, 2)){
 a <- stl(fatal,s.window = 1, t.window = i)
 b <- stl(fatal,s.window = 3, t.window = i)
 c <- stl(fatal,s.window = 5, t.window = i)
@@ -109,12 +63,15 @@ speech <- ts(scan(file="speech.txt"),frequency=10000)
 View(speech)
 
 # Part A =================================
-rr<-c(1:200)
-
-rr <- list(rep(list(freq=c(1:1025), spec=c(1:1025), M=c(1), std.err=c(1)),200))
-for(i in c(1:200)) {
-  rr[[i]]<-spec.parzen(speech,maxlag=i,plot=T)
+sp <- list()
+for(i in c(1:200)){
+  name <- paste(i,sep='')
+  pdf(paste("sp", "_",i,".pdf", sep = ""))
+  tmp <- spec.parzen(speech,maxlag=i,plot=T)
+  dev.off()
+  sp[[name]] <- tmp
 }
+
 
 
 r<-spec.parzen(speech,maxlag=i,plot=T)r
@@ -122,9 +79,22 @@ r$std.err
 plot(r)
 
 # Part B =================================
-r <- spec.ar(speech,order=10,method="burg")
-# Part C =================================
+sa <- list()
+for(i in c(1:200)){
+  name <- paste(i,sep='')
+  pdf(paste("sa", "_",i,".pdf", sep = ""))
+  tmp <- spec.ar(speech,order=i,method="burg")
+  dev.off()
+  sa[[name]] <- tmp
+}
 
+pdf(paste("sa18",".pdf", sep = ""))
+r <- spec.ar(speech,method="yule-walker")
+dev.off()
+r$freq[which.max(r$spec)]
+r$freq[64]
+# Part C =================================
+#See write up
 
 ### Question 3 #############################
 gold<-ts(scan(file="barrick.txt"))
@@ -164,23 +134,19 @@ resgold_011<-Arima(gold,order=c(0,1,1))$residuals
 resgold_012<-Arima(gold,order=c(0,1,2))$residuals
 #
 
-garchtests<-c(1:10)
-for (i in c(1:5)) {
-  garchtests[i]<- garchFit(data=resgold_012, formula = ~ garch(i, 0))$p.value
-}
-for (i in c(6:10)) {
-  garchtests[i]<-garchFit(data=resgold_012, formula = ~ garch(i-5, 0))$statistic
-}
-garchtests
+ARCH1<-garchFit(data=resgold_012, formula = ~ garch(1, 0), trace=F)
+ARCH2<-garchFit(data=resgold_012, formula = ~ garch(2, 0), trace=F)
+ARCH3<-garchFit(data=resgold_012, formula = ~ garch(3, 0), trace=F)
+ARCH4<-garchFit(data=resgold_012, formula = ~ garch(4, 0), trace=F)
+ARCH5<-garchFit(data=resgold_012, formula = ~ garch(5, 0), trace=F)
 
-
-garchFit(~ garch(i, 0),data=resgold_012)$p.value
-ARCH2 <- garchFit(~ garch(1,0), data = resgold_012, trace = FALSE) 
-summary(ARCH2)
+summary(ARCH3)
 
 # Part C =================================
-garch(gold, order=c(1,1))
-garch(gold, order=c(1,2))
-garch(gold, order=c(1,3))
-garch(gold, order=c(1,4))
-garch(gold, order=c(1,5))
+GARCH11<-garchFit(data=resgold_012, formula = ~ garch(1, 1), trace=F)
+GARCH21<-garchFit(data=resgold_012, formula = ~ garch(2, 1), trace=F)
+GARCH31<-garchFit(data=resgold_012, formula = ~ garch(3, 1), trace=F)
+GARCH41<-garchFit(data=resgold_012, formula = ~ garch(4, 1), trace=F)
+GARCH51<-garchFit(data=resgold_012, formula = ~ garch(5, 1), trace=F)
+
+summary(GARCH31)
