@@ -70,17 +70,22 @@ for (i in c(9:84)){
 
 
 # Part B =================================
-
-for (i in c(9:50)){
+setwd("~/Documents/Time_Series/A4_STL_ACFs")
+for (i in c(9:84)){
   for (j in c(1:6)) {
-    acf(stls[[i]][[j]]$time.series[,3],
-        main=paste("acf of stl's irregular component for ", "t=",2*i-1, " " ,"and s=", 2*j-1, sep = ""))
+    pdf(paste("stl_acf_", "t_",2*i-1, "_s_", 2*j-1,".pdf", sep = ""))
+    acf(stls[[i]][[j]]$time.series[,3])
+        main=paste("acf of stl's irregular component for ", "t=",2*i-1, " " ,"and s=", 2*j-1, sep = "")
+    dev.off()
   }
 }
 
-pacf(as.datafra(stls[[13]][[3]]$time.series[,3]))
-stls[[1]][[1]]$time.series
-
+acf(stls[[24]][[5]]$time.series[,3])
+pacf(stls[[24]][[5]]$time.series[,3])
+bartlett(stls[[24]][[5]]$time.series[,3])
+acf(stls[[18]][[3]]$time.series[,3])
+pacf(stls[[18]][[3]]$time.series[,3])
+acf(stls[[18]][[1]]$time.series[,3])
 # Part C =================================
 
 
