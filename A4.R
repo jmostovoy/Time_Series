@@ -63,7 +63,7 @@ setwd("~/Documents/Time_Series/A4_STL_Robust_Plots")
 for (i in c(9:84)){
   for (j in c(1:6)) {
     pdf(paste("stl_robust_", "t_",2*i-1, "_s_", 2*j-1,".pdf", sep = ""))
-    plot(stlsr[[i]][[j]],main=paste("stl for ", "t=",2*i-1, " " ,"and s=", 2*j-1, sep = ""))
+    plot(stlsr[[i]][[j]],main=paste("stl robust for ", "t=",2*i-1, " " ,"and s=", 2*j-1, sep = ""))
     dev.off()
   }
 }
