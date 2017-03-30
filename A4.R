@@ -13,7 +13,7 @@ library(ggplot2)
 ### Question 1 #############################
 
 #Import Data
-setwd("~/Documents/Time_Series/plotsA4")
+setwd("~/Documents/Time_Series")
 fatal <- scan(file="fatalities.txt")
 fatal <- ts(log(fatal), start=c(1960,1),end=c(1974,12),freq=12)
 View(fatal)
@@ -33,6 +33,8 @@ tmp <- list(s1=a, s3=b, s5=c, s7=d, s9=e, s11=f)
 stls[[name]] <- tmp
 }
 
+
+setwd("~/Documents/Time_Series/A4_STL_Plots")
 for (i in c(9:50)){
   for (j in c(1:6)) {
     pdf(paste("stl_", "t_",2*i-1, "_s_", 2*j-1,".pdf", sep = ""))
