@@ -32,10 +32,10 @@ name <- paste('t',i,sep='')
 tmp <- list(s1=a, s3=b, s5=c, s7=d, s9=e, s11=f)
 stls[[name]] <- tmp
 }
-
+length(stls)
 
 setwd("~/Documents/Time_Series/A4_STL_Plots")
-for (i in c(9:50)){
+for (i in c(9:84)){
   for (j in c(1:6)) {
     pdf(paste("stl_", "t_",2*i-1, "_s_", 2*j-1,".pdf", sep = ""))
     plot(stls[[i]][[j]],main=paste("stl for ", "t=",2*i-1, " " ,"and s=", 2*j-1, sep = ""))
