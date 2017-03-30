@@ -74,8 +74,8 @@ setwd("~/Documents/Time_Series/A4_STL_ACFs")
 for (i in c(9:84)){
   for (j in c(1:6)) {
     pdf(paste("stl_acf_", "t_",2*i-1, "_s_", 2*j-1,".pdf", sep = ""))
-    acf(stls[[i]][[j]]$time.series[,3])
-        main=paste("acf of stl's irregular component for ", "t=",2*i-1, " " ,"and s=", 2*j-1, sep = "")
+    acf(stls[[i]][[j]]$time.series[,3],
+        main=paste("acf of stl's irregular component for ", "t=",2*i-1, " " ,"and s=", 2*j-1, sep = ""))
     dev.off()
   }
 }
