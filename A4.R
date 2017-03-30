@@ -43,6 +43,31 @@ for (i in c(9:84)){
   }
 }
 
+#robust
+
+stlsr <- list()
+for(i in seq(1, 167, 2)){
+  a <- stl(fatal,s.window = 1, t.window = i, robust=T)
+  b <- stl(fatal,s.window = 3, t.window = i, robust=T)
+  c <- stl(fatal,s.window = 5, t.window = i, robust=T)
+  d <- stl(fatal,s.window = 7, t.window = i, robust=T)
+  e <- stl(fatal,s.window = 9, t.window = i, robust=T)
+  f <- stl(fatal,s.window = 11, t.window = i, robust=T)
+  name <- paste('t',i,sep='')
+  tmp <- list(s1=a, s3=b, s5=c, s7=d, s9=e, s11=f)
+  stlsr[[name]] <- tmp
+}
+length(stlsr)
+
+setwd("~/Documents/Time_Series/A4_STL_Robust_Plots")
+for (i in c(9:84)){
+  for (j in c(1:6)) {
+    pdf(paste("stl_robust_", "t_",2*i-1, "_s_", 2*j-1,".pdf", sep = ""))
+    plot(stlsr[[i]][[j]],main=paste("stl for ", "t=",2*i-1, " " ,"and s=", 2*j-1, sep = ""))
+    dev.off()
+  }
+}
+
 
 # Part B =================================
 
