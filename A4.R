@@ -115,7 +115,7 @@ speech <- ts(scan(file="speech.txt"),frequency=10000)
 View(speech)
 
 # Part A =================================
-setwd("~/Documents/Time_Series/SP_Plots")
+setwd("~/Documents/Time_Series/A4_SP_Plots")
 sp <- list()
 for(i in c(1:200)){
   name <- paste(i,sep='')
