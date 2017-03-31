@@ -132,6 +132,8 @@ r$std.err
 plot(r)
 
 # Part B =================================
+
+setwd("~/Documents/Time_Series/A4_SA_Plots")
 sa <- list()
 for(i in c(1:200)){
   name <- paste(i,sep='')
