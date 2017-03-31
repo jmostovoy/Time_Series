@@ -97,6 +97,7 @@ bartlett(stls[[42]][[6]]$time.series[,3])
 
 
 
+
 #Box Test
 box_test_pvalue<-c(1:15)
 for (i in c(1:15)) {
@@ -143,13 +144,26 @@ for(i in c(1:200)){
   sa[[name]] <- tmp
 }
 
-pdf(paste("sa18",".pdf", sep = ""))
+pdf(paste("sa_YW",".pdf", sep = ""))
 r <- spec.ar(speech,method="yule-walker")
 dev.off()
 r$freq[which.max(r$spec)]
 r$freq[64]
 # Part C =================================
-#See write up
+#See write up and:
+r$freq[which.max(r$spec)]
+
+
+spec.ar(speech,order=i,method="burg")$freq[which.max(spec.ar(speech, order=20,method="burg")$spec)]
+spec.ar(speech,order=i,method="burg")$freq[which.max(spec.ar(speech, order=40,method="burg")$spec)]
+spec.ar(speech,order=i,method="burg")$freq[which.max(spec.ar(speech, order=60,method="burg")$spec)]
+spec.ar(speech,order=i,method="burg")$freq[which.max(spec.ar(speech, order=80,method="burg")$spec)]
+spec.ar(speech,order=i,method="burg")$freq[which.max(spec.ar(speech, order=100,method="burg")$spec)]
+spec.ar(speech,order=i,method="burg")$freq[which.max(spec.ar(speech, order=120,method="burg")$spec)]
+spec.ar(speech,order=i,method="burg")$freq[which.max(spec.ar(speech, order=140,method="burg")$spec)]
+spec.ar(speech,order=i,method="burg")$freq[which.max(spec.ar(speech, order=160,method="burg")$spec)]
+#hi
+
 
 ### Question 3 #############################
 gold<-ts(scan(file="barrick.txt"))
@@ -195,7 +209,11 @@ ARCH3<-garchFit(data=resgold_012, formula = ~ garch(3, 0), trace=F)
 ARCH4<-garchFit(data=resgold_012, formula = ~ garch(4, 0), trace=F)
 ARCH5<-garchFit(data=resgold_012, formula = ~ garch(5, 0), trace=F)
 
+summary(ARCH1)
+summary(ARCH2)
 summary(ARCH3)
+summary(ARCH4)
+summary(ARCH5)
 
 # Part C =================================
 GARCH11<-garchFit(data=resgold_012, formula = ~ garch(1, 1), trace=F)
@@ -204,4 +222,8 @@ GARCH31<-garchFit(data=resgold_012, formula = ~ garch(3, 1), trace=F)
 GARCH41<-garchFit(data=resgold_012, formula = ~ garch(4, 1), trace=F)
 GARCH51<-garchFit(data=resgold_012, formula = ~ garch(5, 1), trace=F)
 
+summary(GARCH11)
+summary(GARCH21)
 summary(GARCH31)
+summary(GARCH41)
+summary(GARCH51)
