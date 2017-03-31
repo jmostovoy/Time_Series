@@ -92,12 +92,20 @@ for (i in c(9:84)){
   }
 }
 
-acf(stls[[24]][[5]]$time.series[,3])
-pacf(stls[[24]][[5]]$time.series[,3])
-bartlett(stls[[24]][[5]]$time.series[,3])
-acf(stls[[18]][[3]]$time.series[,3])
-pacf(stls[[18]][[3]]$time.series[,3])
-acf(stls[[18]][[1]]$time.series[,3])
+#Bartlett for t=83, s=11
+bartlett(stls[[42]][[6]]$time.series[,3])
+
+
+
+#Box Test
+box_test_pvalue<-c(1:15)
+for (i in c(1:15)) {
+  box_test_pvalue[i]<-Box.test(stls[[42]][[6]]$time.series[,3], lag=i,type="Ljung")$p.value
+}
+box_test_pvalue
+xtable(t(as.data.frame(box_test_pvalue)), digits = 4)
+
+
 # Part C =================================
 
 
@@ -107,6 +115,7 @@ speech <- ts(scan(file="speech.txt"),frequency=10000)
 View(speech)
 
 # Part A =================================
+setwd("~/Documents/Time_Series/SP_Plots")
 sp <- list()
 for(i in c(1:200)){
   name <- paste(i,sep='')
